@@ -1,8 +1,8 @@
 let modInfo = {
 	name: "The Elemental Tree",
 	id: "sandKingElements",
-	author: "nobody",
-	pointsName: "points",
+	author: "Sand King",
+	pointsName: "mana",
 	discordName: "",
 	discordLink: "",
 	changelogLink: "https://github.com/Acamaeda/The-Modding-Tree/blob/master/changelog.md",
@@ -36,6 +36,8 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	if (hasUpgrade("c", 11)) gain = gain.times(upgradeEffect("c", 11))
+	if (hasUpgrade("c", 12)) gain = gain.times(upgradeEffect("c", 12))
 	return gain
 }
 
