@@ -29,7 +29,7 @@ addLayer("c", {
     ],
 
     upgrades: {
-        rows: 2,
+        rows: 3,
         cols: 3,
         11: {
             title: "Potency",
@@ -44,35 +44,65 @@ addLayer("c", {
             cost: new Decimal(3),
             effect() {
                 var initial = player[this.layer].points.add(1).log10().add(1) //log(crystals+1)+1
-                return hasUpgrade(this.layer, 21) ? initial.exp(2) : initial
-            }, 
+                return hasUpgrade(this.layer, 21) ? initial.pow(2) : initial
+            },
+            effectDisplay() {return format(tmp.c.upgrades[12].effect)+"x"}, 
         },
 
         13: {
             title: "Growth",
             description: "Mana boosts crystal gain.",
             cost: new Decimal(6),
-            effect() {return player.points.add(1).log10().exp(1.05)}, //log(mana+1)^1.1
+            effect() {return player.points.add(1).log10().sqrt().add(1)}, //sqrt(log(mana+1))+1
+            effectDisplay() {return format(tmp.c.upgrades[13].effect)+"x"}, 
         },
 
         21: {
             title: "Empowered Conduits",
             description: "<b>Conduits</b> power increased.", //new: (log(crystals+1)+1)^2
-            cost: new Decimal(35),
+            cost: new Decimal(20),
         },
 
         22: {
             title: "Fractalisation",
             description: "Crystals boost crystal gain.",
-            cost: new Decimal(200),
-            effect() {return player[this.layer].points.add(1).log10().add(1).log2()}, //log2(log(crystals+1)+1)
+            cost: new Decimal(50),
+            effect() {return player[this.layer].points.add(1).log10().add(1).log2().add(1)}, //log2(log(crystals+1)+1)+1
+            effectDisplay() {return format(tmp.c.upgrades[22].effect)+"x"}, 
         },
 
         23: {
             title: "Deluge",
             description: "Mana boosts mana gain.",
+            cost: new Decimal(100),
+            effect() {return player.points.add(1).log10().add(1).exp(hasUpgrade(this.layer, 32) ? player.c.upgrades.length : 1)}, //log(mana+1)+1
+            effectDisplay() {return format(tmp.c.upgrades[23].effect)+"x"}, 
+        },
+
+        31: {
+            title: "Accumulation",
+            description: "Crystal upgrades boost mana gain.",
+            cost: new Decimal(350),
+            effect() {
+                let base = new Decimal(player.c.upgrades.length);
+                base = base.pow(0.15);
+                return base;
+            }, //upgrades^0.1
+            effectDisplay() {return "^"+format(tmp.c.upgrades[31].effect)}, 
+        },
+
+        32: {
+            title: "Addendum",
+            description: "Crystal upgrades exponentiate the <b>Deluge</b> effect.", //new: (log(mana+1)+1)^upgrades
             cost: new Decimal(1e3),
-            effect() {return player.points.add(1).log10().add(1)}, //log(mana+1)+1
+        },
+
+        33: {
+            title: "Acquired Knowledge",
+            description: "Crystal upgrades boost mana gain.", //(upgrades*0.02)+1
+            cost: new Decimal(2e6),
+            effect() {return new Decimal(player.c.upgrades.length).times(0.015).add(1)},
+            effectDisplay() {return "^"+format(tmp.c.upgrades[33].effect)}, 
         },
     },
 
@@ -88,7 +118,7 @@ addLayer("o", {
 		points: new Decimal(0),
     }},
     color: "#53EDB3",
-    requires: function() {return new Decimal(5e4)}, // Can be a function that takes requirement increases into account
+    requires: function() {return new Decimal(5e20)}, // Can be a function that takes requirement increases into account
     resource: "orbs", // Name of prestige currency
     baseResource: "crystals", // Name of resource prestige is based on
     baseAmount() {return player["c"].points}, // Get the current amount of baseResource
