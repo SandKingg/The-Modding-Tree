@@ -40,6 +40,8 @@ function getPointGen() {
 	if (hasUpgrade("c", 12)) gain = gain.times(upgradeEffect("c", 12))
 	if (hasUpgrade("c", 23)) gain = gain.times(upgradeEffect("c", 23))
 
+	if (player.o.unlocked) gain = gain.times(tmp.o.effect)
+
 	if (hasUpgrade("c", 31)) gain = gain.pow(upgradeEffect("c", 31))
 	if (hasUpgrade("c", 33)) gain = gain.pow(upgradeEffect("c", 33))
 	return gain
@@ -64,5 +66,5 @@ function isEndgame() {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(3600000) // Default is 1 hour which is just arbitrarily large
+	return(3600) // Default is 1 hour which is just arbitrarily large
 }

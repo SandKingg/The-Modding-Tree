@@ -75,7 +75,7 @@ addLayer("c", {
             title: "Deluge",
             description: "Mana boosts mana gain.",
             cost: new Decimal(100),
-            effect() {return player.points.add(1).log10().add(1).exp(hasUpgrade(this.layer, 32) ? player.c.upgrades.length : 1)}, //log(mana+1)+1
+            effect() {return player.points.add(1).log10().add(1).exp(hasUpgrade(this.layer, 32) ? upgradeEffect(this.layer, 32) : 1)}, //log(mana+1)+1
             effectDisplay() {return format(tmp.c.upgrades[23].effect)+"x"}, 
         },
 
@@ -95,6 +95,8 @@ addLayer("c", {
             title: "Addendum",
             description: "Crystal upgrades exponentiate the <b>Deluge</b> effect.", //new: (log(mana+1)+1)^upgrades
             cost: new Decimal(1e3),
+            effect() {return new Decimal(player.c.upgrades.length)},
+            effectDescription() {return "^"+format(tmp.c.upgrades[32].effect)}, 
         },
 
         33: {
@@ -118,13 +120,13 @@ addLayer("o", {
 		points: new Decimal(0),
     }},
     color: "#53EDB3",
-    requires: function() {return new Decimal(5e20)}, // Can be a function that takes requirement increases into account
+    requires: function() {return new Decimal(2e17)}, // Can be a function that takes requirement increases into account
     resource: "orbs", // Name of prestige currency
-    baseResource: "crystals", // Name of resource prestige is based on
-    baseAmount() {return player["c"].points}, // Get the current amount of baseResource
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     branches: ["c"],
-    exponent: new Decimal(0.5), // Prestige currency exponent
+    exponent: new Decimal(0.25), // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -137,8 +139,44 @@ addLayer("o", {
     hotkeys: [
         {key: "o", description: "Reset for orbs", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
+    effectBase() {
+        return new Decimal(2)
+    },
+    effect() {
+        return Decimal.pow(tmp.o.effectBase, player.o.points).max(0)
+    },
+    effectDescription() {
+        return "which are boosting Mana generation by "+format(tmp.o.effect)+"x"
+    },
+
+    upgrades: {
+        rows: 2,
+        cols: 5,
+
+        11: {
+            title: "Chosen",
+            description: "Unlock Elemental Alignments",
+            cost: new Decimal(3),
+        },
+    },
 
     layerShown(){return player.c.unlocked}
+})
+
+addLayer("a", {
+    name: "alignments",
+    symbol: "A",
+    position: 0,
+    row: "side",
+    color: "#EFE87C",
+    tooltip() {
+        return("Elemental Alignments")
+    },
+    startData() { return {
+        unlocked: true
+    }},
+
+    layerShown(){return hasUpgrade("o", 11)}
 })
 
 /*addLayer("f", {
