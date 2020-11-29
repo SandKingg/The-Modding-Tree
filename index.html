@@ -60,7 +60,7 @@
 			</div>
 			<overlay-head v-if="!(gameEnded && !player.keepGoing)"></overlay-head>
 			<div class="sideLayers" >
-				<div v-for="node in OTHER_LAYERS['side']"><layer-node :layer='node' :abb='tmp[node].symbol' :size="'small'"></layer-node></div>
+				<div v-for="node in OTHER_LAYERS['side']"><tree--node :layer='node' :abb='tmp[node].symbol' :size="'small'"></tree-node></div>
 			</div>
 		</div>
 
@@ -73,7 +73,7 @@
 			<layer-tab :layer="player.navTab == 'none' ? player.tab : player.navTab" ></layer-tab>
 
 		</div>
-		<div v-if="player.navTab !== 'none' && !(gameEnded && !player.keepGoing)" v-bind:class="{ fullWidth: player.navTab == 'none', col: player.navTab != 'none', right: player.navTab != 'none', fast: true, tab: true}">
+		<div v-if="player.navTab !== 'none' && player.tab !== 'none' && !(gameEnded && !player.keepGoing)" v-bind:class="{ fullWidth: player.navTab == 'none', col: player.navTab != 'none', right: player.navTab != 'none', fast: true, tab: true}">
 			<div v-for="layer in LAYERS" >
 				<div v-if="player.tab==layer" > 
 					<layer-tab :layer="layer" :back="'none'" :spacing="'50px'"></layer-tab>

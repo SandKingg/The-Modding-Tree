@@ -1,5 +1,20 @@
 # The Modding Tree changelog:
 
+### v2.2.4 - 11/28/20
+- Added softcap and softcapPower features (for Normal layers)
+- Offline time limit and default max tick length were fixed (previously the limits were 1000x too large)
+- Added fixOldSaves.
+- You can use HTML in mainDisplay.
+- Fixed a number of minor oddities.
+
+### v2.2.3 - 11/28/20
+- Layers will be highlighted if you can finish a challenge.
+- The "can complete challenge" color now overrides the "already completed" color.
+- Button nodes now work as side "layers".
+- Setting a tooltip to "" hides it entirely.
+
+### v2.2.2 - 11/22/20
+- Fixed right half of the screen being unclickable in some circumstances.
 - Fixed tree branches being offset.
 - Fix to lastSafeTab.
 

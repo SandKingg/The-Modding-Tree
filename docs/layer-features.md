@@ -94,9 +94,14 @@ You can make almost any value dynamic by using a function in its place, includin
 
 - roundUpCost: **optional**. a bool, which is true if the resource cost needs to be rounded up. (use if the base resource is a "static" currency.)
 
-- canBuyMax(): **sometimes required**. required for static layers, function used to determine if buying max is permitted.
-
 - gainMult(), gainExp(): **optional**. Functions that calculate the multiplier and exponent on resource gain from upgrades and boosts and such. Plug in any bonuses here.
+
+- softcap, softcapPower: **optional**. For normal layers, gain beyond [softcap] points is put to the [softcapPower]th power
+    Default for softcap is e1e7, and for power is 0.5.
+
+## Other prestige-related features
+
+- canBuyMax(): **sometimes required**. required for static layers, function used to determine if buying max is permitted.
 
 - onPrestige(gain): **optional**. A function that triggers when this layer prestiges, just before you gain the currency.  Can be used to have secondary resource gain on prestige, or to recalculate things or whatnot.
 
@@ -104,7 +109,7 @@ You can make almost any value dynamic by using a function in its place, includin
 
 - prestigeButtonText(): **sometimes required**. Use this to make the entirety of the text a Prestige button contains. Only required for custom layers, but usable by all types.
 
-- passiveGain(): **optional**, returns a regular number. You automatically generate your gain times this number every second (does nothing if absent)
+- passiveGeneration(): **optional**, returns a regular number. You automatically generate your gain times this number every second (does nothing if absent)
         This is good for automating Normal layers.
 
 - autoPrestige(): **optional**, returns a boolean, if true, the layer will always automatically do a prestige if it can.
@@ -121,6 +126,7 @@ You can make almost any value dynamic by using a function in its place, includin
 - nodeStyle: **optional**. A CSS object, where the keys are CSS attributes, which styles this layer's node on the tree.
 
 - tooltip() / tooltipLocked(): **optional**. Functions that return text, which is the tooltip for the node when the layer is unlocked or locked, respectively. By default the tooltips behave the same as in the original Prestige Tree.
+    If the value is "", the tooltip will be disabled.
 
 ## Other features
 
