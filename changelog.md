@@ -1,7 +1,18 @@
 # The Modding Tree changelog:
 
-###
+### v2.2.7 11/30/20
+- Added autoUpgrade feature.
+- resource-display now shows resource gain per second if passiveGain is active.
+- Fixed formatting issues on some large numbers.
+- Better support for using classed objects in player and in layers/tmp.
+- Made hard resetting more effective.
+- Removed Herobrine from getStartClickables.
+
+### v2.2.6 11/30/20
+- Added goalDescription for challenges and made the new "canComplete" system the standard.
 - Another attempt to fix challenges not visually updating.
+- Fixed side layers not appearing.
+- Fixed getStartClickables again.
 
 ### v2.2.5 11/29/20
 - Added features for overriding the displays and costs/goals of upgrades and challenges to make them fully custom.

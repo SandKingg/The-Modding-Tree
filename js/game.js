@@ -4,7 +4,7 @@ var gameEnded = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.2.5",
+	tmtNum: "2.2.7.1",
 	tmtName: "Uprooted"
 }
 
@@ -272,6 +272,12 @@ VERSION.withoutName = "v" + VERSION.num + (VERSION.pre ? " Pre-Release " + VERSI
 VERSION.withName = VERSION.withoutName + (VERSION.name ? ": " + VERSION.name : "")
 
 
+function autobuyUpgrades(layer){
+	if (!tmp[layer].upgrades) return
+	for (id in tmp[layer].upgrades)
+		if (isPlainObject(tmp[layers].upgrades[id]) && (layers[layer].upgrades[id].canAfford === undefined || layers[layer].upgrades[id].canAfford() === true))
+			buyUpg(layer, id) 
+}
 
 function gameLoop(diff) {
 	if (isEndgame() || gameEnded) gameEnded = 1
@@ -312,6 +318,7 @@ function gameLoop(diff) {
 			let layer = TREE_LAYERS[x][item]
 			if (tmp[layer].autoPrestige && tmp[layer].canReset) doReset(layer);
 			if (layers[layer].automate) layers[layer].automate();
+			if (layers[layer].autoUpgrade) autobuyUpgrades(layer)
 		}
 	}
 
@@ -320,6 +327,7 @@ function gameLoop(diff) {
 			let layer = OTHER_LAYERS[row][item]
 			if (tmp[layer].autoPrestige && tmp[layer].canReset) doReset(layer);
 			if (layers[layer].automate) layers[layer].automate();
+			if (layers[layer].autoUpgrade) autobuyUpgrades(layer)
 		}
 	}
 
@@ -332,7 +340,7 @@ function gameLoop(diff) {
 
 function hardReset() {
 	if (!confirm("Are you sure you want to do this? You will lose all your progress!")) return
-	player = getStartPlayer()
+	player = null
 	save();
 	window.location.reload();
 }

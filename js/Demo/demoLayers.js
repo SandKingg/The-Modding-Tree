@@ -15,6 +15,7 @@ addLayer("c", {
             beep: false,
         }},
         color: "#4BDC13",
+        autoUpgrade: true,
         requires: new Decimal(10), // Can be a function that takes requirement increases into account
         resource: "lollipops", // Name of prestige currency
         baseResource: "candies", // Name of resource prestige is based on
@@ -27,7 +28,6 @@ addLayer("c", {
         // For normal layers, gain beyond [softcap] points is put to the [softcapPower]th power
         softcap: new Decimal(1e100), 
         softcapPower: new Decimal(0.5), 
-
         canBuyMax() {}, // Only needed for static layers with buy max
         gainMult() { // Calculate the multiplier for main currency from bonuses
             mult = new Decimal(1)
@@ -83,7 +83,8 @@ addLayer("c", {
                 name: "Fun",
                 completionLimit: 3,
 			    challengeDescription() {return "Makes the game 0% harder<br>"+challengeCompletions(this.layer, this.id) + "/" + this.completionLimit + " completions"},
-			    unlocked() { return player[this.layer].best.gt(0) },
+                unlocked() { return player[this.layer].best.gt(0) },
+                goalDescription: 'Have 20 lollipops I guess',
                 goal: new Decimal("20"),
                 currencyDisplayName: "lollipops", // Use if using a nonstandard currency
                 currencyInternalName: "points", // Use if using a nonstandard currency
