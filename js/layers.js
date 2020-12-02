@@ -122,7 +122,7 @@ addLayer("o", {
     color: "#53EDB3",
     requires: function() {return new Decimal(2e17)}, // Can be a function that takes requirement increases into account
     resource: "orbs", // Name of prestige currency
-    baseResource: "points", // Name of resource prestige is based on
+    baseResource: "mana", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     branches: ["c"],
@@ -143,10 +143,10 @@ addLayer("o", {
         return new Decimal(2)
     },
     effect() {
-        return Decimal.pow(tmp.o.effectBase, player.o.points).max(0)
+        return tmp.o.effectBase.times(player.o.points)
     },
     effectDescription() {
-        return "which are boosting Mana generation by "+format(tmp.o.effect)+"x"
+        return "which are boosting mana generation by "+format(tmp.o.effect)+"x"
     },
 
     upgrades: {
@@ -156,7 +156,7 @@ addLayer("o", {
         11: {
             title: "Chosen",
             description: "Unlock Elemental Alignments",
-            cost: new Decimal(3),
+            cost: new Decimal(2),
         },
     },
 
@@ -169,29 +169,84 @@ addLayer("a", {
     position: 0,
     row: "side",
     color: "#EFE87C",
+    baseResource: "mana", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    resource: "alignment points",
     tooltip() {
         return("Elemental Alignments")
     },
     startData() { return {
-        unlocked: true
+        unlocked: true,
+        points: new Decimal(1),
+        aligned: '',
     }},
+    effectDescription() {
+        if(player.a.aligned == ''){
+            return "choose carefully."
+        } else {
+            return "you have already aligned with your chosen element."
+        }
+    },
+
+    upgrades: {
+        rows: 1,
+        cols: 4,
+
+        11: {
+            title: "Fire",
+            description: "Aligns with fire. Fire focuses on passive bonuses and synergy between layers.",
+            cost: new Decimal(1),
+            onPurchase() {player.a.aligned = 'f'},
+        }
+    },
 
     layerShown(){return hasUpgrade("o", 11)}
 })
 
-/*addLayer("f", {
+addLayer("f", {
     name: "fire", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "F", // This appears on the layer's node. Default is the id with the first letter capitalized
+    row: "side",
     position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    branches: ["a"],
+    resource: "fire",
+    baseResource: "mana", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
     startData() { return {
-        unlocked: false,
-		points: new Decimal(0),
+        unlocked: true,
+        points: new Decimal(0),
     }},
-    color: "#CEDBD9",
-    requires: function() {return player[this.layer].upgrades.includes(22) ? new Decimal(7) : new Decimal(10)}, // Can be a function that takes requirement increases into account
-    resource: "fire", // Name of prestige currency
-    baseResource: "crystals", // Name of resource prestige is based on
-    baseAmount() {return player["c"].points}, // Get the current amount of baseResource
-    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 1, // Prestige currency exponent
-})*/
+    tooltip() {
+        return("Fire")
+    },
+    color: "#F76429",
+    effect() {
+        let eff = new Decimal(1)
+        if(hasUpgrade("f", 11)) eff = eff.times(tmp.f.upgrades[11].effect)
+        return eff
+    },
+    effectDescription() {
+        return "which are boosting mana generation by "+format(tmp.f.effect)+"x"
+    },
+
+    upgrades: {
+        rows: 1,
+        cols: 4,
+
+        11: {
+            title: "Warmth",
+            description: "Fire boosts mana gain.",
+            cost: new Decimal(1),
+            currencyInternalName: "points",
+            currencyDisplayName: "mana",
+            effect() {return new Decimal(5).times(player.f.points)},
+            effectDisplay() {return format(tmp.f.upgrades[11].effect)+"x"}, 
+        }
+    },
+
+    update(diff){
+        player.f.points = new Decimal(player.f.upgrades.length)
+    },
+
+    layerShown(){return player.a.aligned == 'f'}
+})
