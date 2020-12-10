@@ -463,6 +463,10 @@ function hasUpgrade(layer, id){
 	return (player[layer].upgrades.includes(toNumber(id)) || player[layer].upgrades.includes(id.toString()))
 }
 
+function hasAlignmentUpgrade(layer, id){
+	return ((player[layer].upgrades.includes(toNumber(id)) || player[layer].upgrades.includes(id.toString())) && player.a.aligned == layer)
+}
+
 function hasMilestone(layer, id){
 	return (player[layer].milestones.includes(toNumber(id)) || player[layer].milestones.includes(id.toString()))
 }

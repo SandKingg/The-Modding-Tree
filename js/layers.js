@@ -28,6 +28,16 @@ addLayer("c", {
         {key: "c", description: "Reset for crystals", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
 
+    doReset(resettingLayer){
+        if (resettingLayer == "c") return
+
+        var keep = []
+        if(hasMilestone("o",0)){
+            keep.push("upgrades")
+        }
+        layerDataReset("c",keep)
+    },
+
     upgrades: {
         rows: 3,
         cols: 3,
@@ -75,7 +85,11 @@ addLayer("c", {
             title: "Deluge",
             description: "Mana boosts mana gain.",
             cost: new Decimal(100),
-            effect() {return player.points.add(1).log10().add(1).exp(hasUpgrade(this.layer, 32) ? upgradeEffect(this.layer, 32) : 1)}, //log(mana+1)+1
+            effect() {
+                let x = player.points.add(1).log10().add(1).exp(hasUpgrade(this.layer, 32) ? upgradeEffect(this.layer, 32) : 1)
+                let cap = hasAlignmentUpgrade("f",12) ? new Decimal(1e8) : new Decimal(1e7)
+                return softcap(x,cap)
+            }, //log(mana+1)+1; softcapped at 10M
             effectDisplay() {return format(tmp.c.upgrades[23].effect)+"x"}, 
         },
 
@@ -160,6 +174,14 @@ addLayer("o", {
         },
     },
 
+    milestones: {
+        0: {
+            requirementDescription: "25 orbs",
+            effectDescription: "Keep Crystal upgrades on reset",
+            done() {return player.o.points.gte(25)},
+        },
+    },
+
     layerShown(){return player.c.unlocked}
 })
 
@@ -222,7 +244,7 @@ addLayer("f", {
     color: "#F76429",
     effect() {
         let eff = new Decimal(1)
-        if(hasUpgrade("f", 11)) eff = eff.times(tmp.f.upgrades[11].effect)
+        if(hasAlignmentUpgrade("f", 11)) eff = eff.times(tmp.f.upgrades[11].effect)
         return eff
     },
     effectDescription() {
@@ -231,7 +253,7 @@ addLayer("f", {
 
     upgrades: {
         rows: 1,
-        cols: 4,
+        cols: 6,
 
         11: {
             title: "Warmth",
@@ -241,7 +263,15 @@ addLayer("f", {
             currencyDisplayName: "mana",
             effect() {return new Decimal(5).times(player.f.points)},
             effectDisplay() {return format(tmp.f.upgrades[11].effect)+"x"}, 
-        }
+        },
+
+        12: {
+            title: "Ignition",
+            description: "Lessen the <b>Deluge</b> softcap.", //new: 100M
+            cost: new Decimal(1e20),
+            currencyInternalName: "points",
+            currencyDisplayName: "mana",
+        },
     },
 
     update(diff){
