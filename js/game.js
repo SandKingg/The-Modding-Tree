@@ -4,8 +4,8 @@ var gameEnded = false;
 
 // Don't change this
 const TMT_VERSION = {
-	tmtNum: "2.2.8",
-	tmtName: "Uprooted"
+	tmtNum: "2.3",
+	tmtName: "Cooler and Newer"
 }
 
 function getResetGain(layer, useType = null) {
@@ -377,6 +377,7 @@ var interval = setInterval(function() {
 	updateTemp();
 	gameLoop(diff)
 	fixNaNs()
+	adjustPopupTime(diff) 
 	ticking = false
 }, 50)
 
